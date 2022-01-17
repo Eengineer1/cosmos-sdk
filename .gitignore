@@ -57,3 +57,4 @@ dependency-graph.png
 *.synctex.gz
 /x/genutil/config/priv_validator_key.json
 /x/genutil/data/priv_validator_state.json
+.vscode-upload.json
