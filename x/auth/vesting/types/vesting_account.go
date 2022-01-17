@@ -213,7 +213,6 @@ func NewContinuousVestingAccountRaw(bva *BaseVestingAccount, startTime int64) *C
 		BaseVestingAccount: bva,
 		StartTime:          startTime,
 		LockedCoins:		sdk.NewCoins(),
-		SpendableCoins:		sdk.NewCoins(),
 	}
 }
 
@@ -229,7 +228,6 @@ func NewContinuousVestingAccount(baseAcc *authtypes.BaseAccount, originalVesting
 		StartTime:          startTime,
 		BaseVestingAccount: baseVestingAcc,
 		LockedCoins:		sdk.NewCoins(),
-		SpendableCoins:		sdk.NewCoins(),
 	}
 }
 
