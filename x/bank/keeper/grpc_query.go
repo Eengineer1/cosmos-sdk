@@ -39,6 +39,56 @@ func (k BaseKeeper) Balance(ctx context.Context, req *types.QueryBalanceRequest)
 	return &types.QueryBalanceResponse{Balance: &balance}, nil
 }
 
+// VestedCoins implements the Query/VestedCoins gRPC method
+func (k BaseKeeper) VestedCoins(ctx context.Context, req *types.QueryBalanceRequest) (*types.QuerySupplyOfResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if req.Address == "" {
+		return nil, status.Error(codes.InvalidArgument, "address cannot be empty")
+	}
+
+	if req.Denom == "" {
+		return nil, status.Error(codes.InvalidArgument, "invalid denom")
+	}
+
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	address, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid address: %s", err.Error())
+	}
+
+	balance := k.LockedCoins(sdkCtx, address)
+
+	return &types.QuerySupplyOfResponse{Amount: sdk.NewCoin(req.Denom, balance.AmountOf(req.Denom))}, nil
+}
+
+// AvailableCoins implements the Query/AvailableCoins gRPC method
+func (k BaseKeeper) AvailableCoins(ctx context.Context, req *types.QueryBalanceRequest) (*types.QuerySupplyOfResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if req.Address == "" {
+		return nil, status.Error(codes.InvalidArgument, "address cannot be empty")
+	}
+
+	if req.Denom == "" {
+		return nil, status.Error(codes.InvalidArgument, "invalid denom")
+	}
+
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	address, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid address: %s", err.Error())
+	}
+
+	balance := k.SpendableCoins(sdkCtx, address)
+
+	return &types.QuerySupplyOfResponse{Amount: sdk.NewCoin(req.Denom, balance.AmountOf(req.Denom))}, nil
+}
+
 // AllBalances implements the Query/AllBalances gRPC method
 func (k BaseKeeper) AllBalances(ctx context.Context, req *types.QueryAllBalancesRequest) (*types.QueryAllBalancesResponse, error) {
 	if req == nil {

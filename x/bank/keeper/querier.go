@@ -53,6 +53,28 @@ func queryBalance(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerie
 	return bz, nil
 }
 
+func queryVested(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
+	var params types.QueryBalanceRequest
+
+	if err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+
+	address, err := sdk.AccAddressFromBech32(params.Address)
+	if err != nil {
+		return nil, err
+	}
+
+	balance := k.GetBalance(ctx, address, params.Denom)
+
+	bz, err := codec.MarshalJSONIndent(legacyQuerierCdc, balance)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
+	}
+
+	return bz, nil
+}
+
 func queryAllBalance(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	var params types.QueryAllBalancesRequest
 

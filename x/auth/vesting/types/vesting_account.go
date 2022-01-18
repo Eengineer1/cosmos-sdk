@@ -169,7 +169,6 @@ type vestingAccountYAML struct {
 	OriginalVesting  sdk.Coins      `json:"original_vesting"`
 	DelegatedFree    sdk.Coins      `json:"delegated_free"`
 	DelegatedVesting sdk.Coins      `json:"delegated_vesting"`
-	LockedCoins 	 sdk.Coins      `json:"locked_coins"`
 	EndTime          int64          `json:"end_time"`
 
 	// custom fields based on concrete vesting type which can be omitted
@@ -212,7 +211,6 @@ func NewContinuousVestingAccountRaw(bva *BaseVestingAccount, startTime int64) *C
 	return &ContinuousVestingAccount{
 		BaseVestingAccount: bva,
 		StartTime:          startTime,
-		LockedCoins:		sdk.NewCoins(),
 	}
 }
 
@@ -227,7 +225,6 @@ func NewContinuousVestingAccount(baseAcc *authtypes.BaseAccount, originalVesting
 	return &ContinuousVestingAccount{
 		StartTime:          startTime,
 		BaseVestingAccount: baseVestingAcc,
-		LockedCoins:		sdk.NewCoins(),
 	}
 }
 
